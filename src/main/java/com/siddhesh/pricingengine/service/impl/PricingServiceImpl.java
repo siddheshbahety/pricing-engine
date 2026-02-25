@@ -14,15 +14,21 @@ public class PricingServiceImpl implements PricingService {
 
     @Override
     @Cacheable(value = "pricingCache", key = "#product.id")
-    public BigDecimal calculatePrice(Product product) {
-        BigDecimal multiplier = BigDecimal.ONE;
+    public BigDecimal getPrice(Product product) {
+        BigDecimal price = product.getBasePrice();
 
-        // Example: increase 20% for "premium" products
-        if (product.getName() != null && product.getName().toLowerCase().contains("premium")) {
-            multiplier = new BigDecimal("1.2");
+        // Example dynamic rules
+        if ("premium".equalsIgnoreCase(product.getCategory())) {
+            price = price.multiply(BigDecimal.valueOf(1.2)); // +20% for premium
         }
 
-        // Multiply basePrice by multiplier
-        return product.getBasePrice().multiply(multiplier);
+        if (product.getInventory() != null && product.getInventory() < 10) {
+            price = price.multiply(BigDecimal.valueOf(1.1)); // +10% for low inventory
+        }
+
+        // Placeholder for future ML model
+        // price = predictiveModel.predict(product);
+
+        return price;
     }
 }

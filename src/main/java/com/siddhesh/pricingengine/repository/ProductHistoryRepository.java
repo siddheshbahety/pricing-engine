@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ProductHistoryRepository extends JpaRepository<ProductHistory, UUID> {
 
     List<ProductHistory> findByProductId(UUID productId);
+    List<ProductHistory> findByProductIdOrderByChangedAtDesc(UUID productId);
 }
