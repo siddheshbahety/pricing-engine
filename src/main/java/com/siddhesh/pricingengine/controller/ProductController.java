@@ -29,6 +29,7 @@ public class ProductController {
     // Create a new product
     @PostMapping("/products")
     public ProductResponse createProduct(@Valid @RequestBody ProductRequest request) {
+
         Product product = Product.builder()
                 .name(request.getName())
                 .basePrice(request.getBasePrice())
@@ -37,21 +38,17 @@ public class ProductController {
                 .build();
 
         Product saved = productService.saveProduct(product);
-        return ProductResponse.builder()
-                .id(saved.getId())
-                .name(saved.getName())
-                .basePrice(saved.getBasePrice())
-                .category(saved.getCategory())
-                .inventory(saved.getInventory())
-                .currentPrice(saved.getBasePrice())
-                .build();
+
+        return mapToResponse(saved, saved.getBasePrice());
     }
 
     // Get product by ID with dynamic price
     @GetMapping("/products/{id}")
     public ProductResponse getProduct(@PathVariable UUID id) {
         Product product = productService.getProductById(id);
-        if (product == null) throw new ResourceNotFoundException("Product with id " + id + " not found");
+        if (product == null) {
+            throw new ResourceNotFoundException("Product not found");
+        }
 
         // Calculate dynamic price
         var price = pricingService.getPrice(product);
@@ -73,7 +70,7 @@ public class ProductController {
     @GetMapping("/products/{id}/price")
     public PriceResponse getPrice(@PathVariable UUID id) {
         Product product = productService.getProductById(id);
-        if (product == null) throw new RuntimeException("Product not found");
+        if (product == null) throw new ResourceNotFoundException("Product not found"); // consistent handling
 
         var price = pricingService.getPrice(product);
         productHistoryService.saveHistory(product, price);
@@ -85,6 +82,17 @@ public class ProductController {
     }
     @GetMapping("/products/{id}/history")
     public List<BigDecimal> getPriceHistory(@PathVariable String id) {
-        return productHistoryService.getHistoryByProductId(id);
+        var history = productHistoryService.getHistoryByProductId(id);
+        return history != null ? history : List.of();
+    }
+    private ProductResponse mapToResponse(Product product, BigDecimal price) {
+        return ProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .basePrice(product.getBasePrice())
+                .category(product.getCategory())
+                .inventory(product.getInventory())
+                .currentPrice(price)
+                .build();
     }
 }

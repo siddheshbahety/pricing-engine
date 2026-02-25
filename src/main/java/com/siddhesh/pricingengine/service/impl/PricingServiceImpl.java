@@ -17,17 +17,9 @@ public class PricingServiceImpl implements PricingService {
     public BigDecimal getPrice(Product product) {
         BigDecimal price = product.getBasePrice();
 
-        // Example dynamic rules
         if ("premium".equalsIgnoreCase(product.getCategory())) {
-            price = price.multiply(BigDecimal.valueOf(1.2)); // +20% for premium
+            price = price.multiply(BigDecimal.valueOf(1.1)); // 10% only
         }
-
-        if (product.getInventory() != null && product.getInventory() < 10) {
-            price = price.multiply(BigDecimal.valueOf(1.1)); // +10% for low inventory
-        }
-
-        // Placeholder for future ML model
-        // price = predictiveModel.predict(product);
 
         return price;
     }
