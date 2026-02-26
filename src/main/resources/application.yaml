@@ -4,10 +4,12 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/pricingdb
-    username: postgres
-    password: password
+    username: siddheshbahety
+    password: ""
+    driver-class-name: org.postgresql.Driver
 
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true

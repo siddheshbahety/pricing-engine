@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -12,4 +13,5 @@ public interface PriceHistoryRepository extends JpaRepository<PriceHistory, UUID
 
     // Example: get history by product
     List<PriceHistory> findByProductIdOrderByTimestampDesc(UUID productId);
+    Optional<PriceHistory> findTopByProductIdOrderByTimestampDesc(UUID productId);
 }
