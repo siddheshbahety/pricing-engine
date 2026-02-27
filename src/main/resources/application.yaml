@@ -3,19 +3,23 @@ spring:
     name: pricing-engine
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/pricingdb
+    url: jdbc:postgresql://postgres:5432/pricingdb
     username: siddheshbahety
-    password: ""
+    password: password
     driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: redis
+      port: 6379
 
 server:
   port: 8080

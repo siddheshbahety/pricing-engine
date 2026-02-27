@@ -1,9 +1,10 @@
 package com.siddhesh.pricingengine.service;
 
-import com.siddhesh.pricingengine.entity.Product;
-
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public interface PricingService {
-    BigDecimal getPrice(Product product);
+
+    BigDecimal getPrice(UUID productId);
+
 }
