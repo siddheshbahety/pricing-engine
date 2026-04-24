@@ -5,6 +5,7 @@ import com.siddhesh.pricingengine.repository.ProductRepository;
 import com.siddhesh.pricingengine.service.DemandService;
 import com.siddhesh.pricingengine.service.PricingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -26,6 +28,7 @@ public class ProductController {
 
     @GetMapping("/{id}/price")
     public BigDecimal getPrice(@PathVariable UUID id) {
+        log.info("Received request to fetch price for productId={}", id);
         return pricingService.getPrice(id);
     }
 

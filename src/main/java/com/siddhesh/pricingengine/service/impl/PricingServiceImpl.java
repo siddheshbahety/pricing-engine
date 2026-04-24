@@ -7,13 +7,14 @@ import com.siddhesh.pricingengine.service.InventoryService;
 import com.siddhesh.pricingengine.service.PricingService;
 import com.siddhesh.pricingengine.service.SurgeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PricingServiceImpl implements PricingService {
@@ -27,7 +28,7 @@ public class PricingServiceImpl implements PricingService {
     @Cacheable(value = "pricingCache", key = "#productId")
     public BigDecimal getPrice(UUID productId) {
 
-        System.out.println("Calculating dynamic price...");
+        log.info("Calculating dynamic price for productId={}", productId);
 
         // 1️⃣ Fetch product from Postgres
         Product product = productRepository.findById(productId)
@@ -47,7 +48,7 @@ public class PricingServiceImpl implements PricingService {
                 .multiply(demandMultiplier)
                 .multiply(inventoryMultiplier)
                 .multiply(surgeMultiplier);
-
+        log.info("Final price calculated for productId={} is {}", productId, finalPrice);
         // 5️⃣ Proper rounding to 2 decimal places (currency safe)
         return finalPrice.setScale(2, RoundingMode.HALF_UP);
     }
